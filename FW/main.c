@@ -28,7 +28,7 @@
 #define ETCHING_PERIOD_S (15*60*2)
 
 uint8_t speed = 0;
-uint8_t counter = 0;
+uint32_t counter = 0;
 uint8_t app_state = 0;
 
 void do_beep(uint8_t n_times)
@@ -75,12 +75,10 @@ ISR(PCINT0_vect)
 			
 		}
 		}
-		
-		//PORTB ^= (1<<LED); //переключаем состояние светодиода (вкл./выкл.)
+		 
 		while ( (PINB & (1<<BUTTON1)) == 0 ) {} // ждём отпускания кнопки
 	}
 }
-
 
 
 int main(void)
@@ -129,7 +127,7 @@ int main(void)
 		break;
 			
 		case 2:
-		PORTB ^= (1<<LED1);
+		PORTB ^= (1<<LED1); //переключаем состояние светодиода (вкл./выкл.)
 		_delay_ms(500);
 		if (++counter > ETCHING_PERIOD_S) app_state = 3;	
 		break;	
@@ -143,37 +141,12 @@ int main(void)
 		case 4:
 		app_state = 0;
 		speed = 0;
+		counter = 0;
 		PORTB &= ~(1<<LED1);
 		sleep_mode();
 		break;
 			
 		}
-	    //#if 0
-		//do // Нарастание яркости
-	    //{
-		    //OCR0A++;
-		    //OCR0B = OCR0A;
-		    //_delay_ms(50);
-	    //}
-	    //while(OCR0A!=255);
-	    //_delay_ms(1000); // Пауза 1 сек.
-	    //do // Затухание
-	    //{
-		    //OCR0A--;
-		    //OCR0B = OCR0A;
-		    //_delay_ms(50);
-	    //}
-	    //while(OCR0A!=0);
-	    //_delay_ms(1000); // Пауза 1 сек.
-		//#endif
-		
-		
-		
-		//if (++count == 5) {
-			//PORTB &= ~(1<<LED1);
-			//sleep_mode();   // go to sleep and wait for interrupt...
-			//count = 0;
-		//}
 		
     }
 }
